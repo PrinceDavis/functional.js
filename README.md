@@ -1,2 +1,2 @@
-# tut-functional-js
-Functional JS tutorial project code for tutsplus.com
+# fuctional.js
+Demostration of how to use high level functions to solve programming issues.
