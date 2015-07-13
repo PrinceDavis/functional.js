@@ -7,7 +7,7 @@ var filters = document.getElementById("filters");
 var filterLinks = filters.querySelectorAll("a");
 var fp = {};
 
-fp.filter = function filter(collection, callBack) {
+fp.filter = function (collection, callBack) {
   var filtered = [];
   for (i=0; i<collection.length; i++) {
     if (callBack(collection[i])) {
@@ -17,7 +17,7 @@ fp.filter = function filter(collection, callBack) {
   return filtered;
 }
 
-fp.map = function map (collection, callBack) {
+fp.map = function (collection, callBack) {
   var mapped = [];
   for (var i = 0; i < collection.length; i++) {
     mapped.push(callBack(collection[i]));
@@ -25,7 +25,7 @@ fp.map = function map (collection, callBack) {
 
   return mapped;
 }
-fp.reduce = function reduce (collection, callBack, initial) {
+fp.reduce = function(collection, callBack, initial) {
   var last = initial;
   for (var i = 0; i < collection.length; i++) {
     last = callBack(last, collection[i]);
@@ -33,12 +33,28 @@ fp.reduce = function reduce (collection, callBack, initial) {
   return last;
 }
 
-fp.add = function add (a, b) {
+fp.add = function (a, b) {
   return a + b;
 }
 
+fp.groupBy = function (collection, callBack) {
+  var grouped = {};
+  var groupName;
+  for (var i = 0; i < collection.length; i++) {
+    groupName = callBack(collection[i]);
+    if (!grouped[groupName]) {
+      grouped[groupName] = [];
+    };
+    grouped[groupName].push(collection[i]);
+  };
+  return grouped;
+}
+
 function loadBeers (beers) {
-  beerList.innerHTML = _.template(beerTemplate)({ beers: beers });
+  var beerGroups = fp.groupBy(beers, function(beer) {
+    return beer.locale;
+  });
+  beerList.innerHTML = _.template(beerTemplate)({ beers: beerGroups });
   averageAbv.innerHTML = 'Average ABV: ' + getAverageAbv(beers) + '%';
 }
 
