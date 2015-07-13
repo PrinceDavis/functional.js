@@ -5,6 +5,37 @@ var beerList = document.getElementById("beerList");
 var averageAbv = document.getElementById("averageAbv");
 var filters = document.getElementById("filters");
 var filterLinks = filters.querySelectorAll("a");
+var fp = {};
+
+fp.filter = function filter(collection, callBack) {
+  var filtered = [];
+  for (i=0; i<collection.length; i++) {
+    if (callBack(collection[i])) {
+      filtered.push(collection[i]);
+    }
+  }
+  return filtered;
+}
+
+fp.map = function map (collection, callBack) {
+  var mapped = [];
+  for (var i = 0; i < collection.length; i++) {
+    mapped.push(callBack(collection[i]));
+  };
+
+  return mapped;
+}
+fp.reduce = function reduce (collection, callBack, initial) {
+  var last = initial;
+  for (var i = 0; i < collection.length; i++) {
+    last = callBack(last, collection[i]);
+  };
+  return last;
+}
+
+fp.add = function add (a, b) {
+  return a + b;
+}
 
 function loadBeers (beers) {
   beerList.innerHTML = _.template(beerTemplate)({ beers: beers });
@@ -18,49 +49,21 @@ function setActiveFilter (active) {
   active.classList.add('btn-active');
 }
 
-function filter(collection, callBack) {
-  var filtered = [];
-  for (i=0; i<collection.length; i++) {
-    if (callBack(collection[i])) {
-      filtered.push(collection[i]);
-    }
-  }
-  return filtered;
-}
 
 function makeFilter (collection, property) {
   return function (value) {
-    return filter(collection, function(item) {
+    return fp.filter(collection, function(item) {
       return item[property] === value;
     });
   }
 }
 
-function map (collection, callBack) {
-  var mapped = [];
-  for (var i = 0; i < collection.length; i++) {
-    mapped.push(callBack(collection[i]));
-  };
-
-  return mapped;
-}
-function reduce (collection, callBack, initial) {
-  var last = initial;
-  for (var i = 0; i < collection.length; i++) {
-    last = callBack(last, collection[i]);
-  };
-  return last;
-}
-
-function add (a, b) {
-  return a + b;
-}
 function getAverageAbv (beers) {
-  var abvs = map(beers function (beer) {
+  var abvs = fp.map(beers function (beer) {
     return beers.abv;
   });
 
-  var total = reduce(abvs, add, 0);
+  var total = fp.reduce(abvs, fp.add, 0);
 
   return Math.round( (total / beers.length) * 10 ) / 10 ;
 }
@@ -89,7 +92,7 @@ filters.addEventListener('click', function (e) {
       filteredBeers = filterByLocale('import');
       break;
     case 'ale':
-      filteredBeers = filter(allBeers, function (beer) {
+      filteredBeers = fp.filter(allBeers, function (beer) {
         return beer.type === 'ale' || beer.type === 'ipa';
       })
       break;
