@@ -16,27 +16,25 @@ function setActiveFilter (active) {
   active.classList.add('btn-active');
 }
 
-function filterBeers (property, value) {
+function filterBeers (callBack) {
   var filteredBeers = [];
   for (i=0; i<beers.length; i++) {
-    if (compareValues(beers[i], property, value)) {
+    if (callBack(beers[i])) {
       filteredBeers.push(beers[i]);
     }
   }
   return filteredBeers;
 }
 
-function compareValues (item, property, value) {
-    if (!Array.isArray(value)) {
-      return item[property] === value;
-    }
-    for (var i = 0; i < value.length; i++) {
-      if (item[property] === value[i]) {
-        return true;
-      };
-    };
-    return false;
+function makeFilter (property) {
+  return function (value) {
+    return filteredBeers(function(beer) {
+      return beer[property] === value;
+    });
+  }
 }
+var filterByLocale = makeFilter('locale');
+var filterByType = makeFilter('type');
 
 loadBeers(beers);
 
@@ -54,20 +52,21 @@ filters.addEventListener('click', function (e) {
       filteredBeers = beers;
       break;
     case 'domestic':
-      filteredBeers = filterBeers('locale', 'domestic');
+      filteredBeers = filterByLocale('domestic');
       break;
     case 'imports':
-      filteredBeers = filterBeers('locale', 'import');
+      filteredBeers = filterByLocale('import');
       break;
     case 'ale':
-      filteredBeers = filterBeers('type', ['ipa', 'ale']);
+      filteredBeers = filteredBeers(function (beer) {
+        return beer.type === 'ale' || beer.type === 'ipa';
+      })
       break;
     case 'lager':
-      filteredBeers = filterBeers('type', 'lager');
+      filteredBeers = filterByType('lager');
       break;
     case 'stout':
-      filteredBeers = filterBeers('type', 'stout');
-
+      filteredBeers = filterByType('stout');
       break;
   }
   
