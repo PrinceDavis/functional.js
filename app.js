@@ -1,6 +1,6 @@
 var beerData = JSON.parse(document.getElementById("beerData").textContent);
 var allBeers = beerData.beers;
-var beerTemplate = document.getElementById("tmpl-beer").textContent;
+var beerTemplate = document.getElementById("tmpl-beer-groups").textContent;
 var beerList = document.getElementById("beerList");
 var averageAbv = document.getElementById("averageAbv");
 var filters = document.getElementById("filters");
@@ -52,7 +52,7 @@ fp.groupBy = function (collection, callBack) {
 };
 
 fp.pluck = function (collection, property) {
-  return fp.map(collection function (item) {
+  return fp.map(collection, function(item) {
     return item[property];
   });
 };
@@ -106,7 +106,7 @@ filters.addEventListener('click', function (e) {
   var i;
 
   setActiveFilter(clicked);
-      
+
   switch (filterName) {
     case 'all':
       filteredBeers = allBeers;
@@ -129,6 +129,6 @@ filters.addEventListener('click', function (e) {
       filteredBeers = filterByType('stout');
       break;
   }
-  
+
   loadBeers(filteredBeers);
 });
