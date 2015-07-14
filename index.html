@@ -12,19 +12,19 @@
         <header class="site-header">
             <a href="/" class="header-logo fancy">( Prince Tg's Pub )</a>
         </header>
-        
+
         <h1 class="fancy">Beer List</h1>
-        
+
          <div id="filters">
             <a href="#" class="btn btn-default btn-active" data-filter="all">All</a>
             <a href="#" class="btn btn-default" data-filter="ale">Ales</a>
             <a href="#" class="btn btn-default" data-filter="lager">Lagers</a>
             <a href="#" class="btn btn-default" data-filter="stout">Stouts</a>
         </div>
-        
+
         <ul id="beerList"></ul>
-        <p id="averageA"></p>
-        
+        <p id="averageAbv"></p>
+
         <script type="text/json" id="beerData">
         {
             "beers": [
@@ -39,11 +39,11 @@
                 {"name": "Samwell Winter Ale", "type": "ale", "locale": "import", "abv": 6.8},
                 {"name": "Sparkwood Beer Five", "type": "lager", "locale": "domestic", "abv": 6.2},
                 {"name": "Sparkwood Campfire Lager", "type": "lager", "locale": "domestic", "abv": 5.8},
-                {"name": "Tartan Scottish Ale", "type": "ale", "locale": "import", "abv": 7.5} 
+                {"name": "Tartan Scottish Ale", "type": "ale", "locale": "import", "abv": 7.5}
             ]
         }
         </script>
-        
+
         <script type="text/template" id="tmpl-beer">
         <% _.forEach(beers, function (beer) { %>
         <li><%= beer.name %> <small>(<%= beer.abv %>%)</small></li>
@@ -51,20 +51,20 @@
         </script>
 
         <script type="text/template" id="tmpl-beer-groups">
-        <% _.forEach(beers, function(group, name) { %
+        <% _.forEach(beers, function(group, name) { %>
             <div class="beer-group">
-            <h3><%= name.charAt(0).toUpperCase() + name.slice(1) %>5</h3>
-            <% _.forEach(group, function(beer) { %
+            <h3><%= name.charAt(0).toUpperCase() + name.slice(1) %></h3>
+            <% _.forEach(group, function(beer) { %>
                 <li><%= beer.name %> <small>(<%= beer.abv %>%)</small><li>
             <%}); %>
             </div>
         <% }); %>
         </script>
-        
+
     </div>
 
     <script src="https://rawgit.com/lodash/lodash/3.0.1/lodash.min.js"></script>
-    <script src="http://code.jquery.com/jqueryjs"></script>
+    <script src="http://code.jquery.com/jquery.min.js"></script>
     <script src="app.js"></script>
 
 </body>
