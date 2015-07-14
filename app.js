@@ -15,7 +15,7 @@ fp.filter = function (collection, callBack) {
     }
   }
   return filtered;
-}
+};
 
 fp.map = function (collection, callBack) {
   var mapped = [];
@@ -24,18 +24,19 @@ fp.map = function (collection, callBack) {
   };
 
   return mapped;
-}
+};
+
 fp.reduce = function(collection, callBack, initial) {
   var last = initial;
   for (var i = 0; i < collection.length; i++) {
     last = callBack(last, collection[i]);
   };
   return last;
-}
+};
 
 fp.add = function (a, b) {
   return a + b;
-}
+};
 
 fp.groupBy = function (collection, callBack) {
   var grouped = {};
@@ -48,7 +49,20 @@ fp.groupBy = function (collection, callBack) {
     grouped[groupName].push(collection[i]);
   };
   return grouped;
-}
+};
+
+fp.pluck = function (collection, property) {
+  return fp.map(collection function (item) {
+    return item[property];
+  });
+};
+
+fp.mean = function (collection, property) {
+  if (property) {
+    collection = fp.pluck(collection, property);
+  }
+  return fp.reduce(collection, fp.add, 0) / collection.length;
+};
 
 function loadBeers (beers) {
   var beerGroups = fp.groupBy(beers, function(beer) {
@@ -56,15 +70,14 @@ function loadBeers (beers) {
   });
   beerList.innerHTML = _.template(beerTemplate)({ beers: beerGroups });
   averageAbv.innerHTML = 'Average ABV: ' + getAverageAbv(beers) + '%';
-}
+};
 
 function setActiveFilter (active) {
   for (i=0; i<filterLinks.length; i++) {
     filterLinks[i].classList.remove('btn-active');
   }
   active.classList.add('btn-active');
-}
-
+};
 
 function makeFilter (collection, property) {
   return function (value) {
@@ -72,17 +85,14 @@ function makeFilter (collection, property) {
       return item[property] === value;
     });
   }
-}
+};
 
 function getAverageAbv (beers) {
-  var abvs = fp.map(beers function (beer) {
-    return beers.abv;
-  });
+  var mean = fp.mean(beers, 'abv');
 
-  var total = fp.reduce(abvs, fp.add, 0);
+  return Math.round( mean * 10 ) / 10 ;
+};
 
-  return Math.round( (total / beers.length) * 10 ) / 10 ;
-}
 var filterByLocale = makeFilter(allBeers, 'locale');
 var filterByType = makeFilter(allBeers, 'type');
 
